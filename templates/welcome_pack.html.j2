@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @page { margin: 40px; }
+  body { font-family: Helvetica, Arial, sans-serif; color: #1e293b; font-size: 13px; }
+  .header { border-bottom: 3px solid #0d9488; padding-bottom: 16px; margin-bottom: 28px; }
+  h1 { font-size: 26px; color: #0d9488; margin: 0 0 4px; }
+  .sub { color: #64748b; font-size: 14px; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: #0d9488; margin: 28px 0 10px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; border-bottom: 2px solid #0d9488; padding: 6px 8px; }
+  td { padding: 9px 8px; border-bottom: 1px solid #e2e8f0; }
+  .facts td { border: none; padding: 4px 0; }
+  .facts .label { color: #64748b; width: 30%; }
+  .contacts td { border: none; padding: 4px 0; }
+  .intro { line-height: 1.6; }
+  .footer { margin-top: 40px; color: #94a3b8; font-size: 11px; border-top: 1px solid #e2e8f0; padding-top: 12px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>Welcome pack</h1>
+    <div class="sub">{{ company_name }} · Prepared for {{ full_name }}</div>
+  </div>
+
+  <p class="intro">
+    Hi {{ first_name }}, welcome aboard. This pack covers what you need for your first week
+    as <strong>{{ role }}</strong>. Keep it handy — everything below is also in your calendar
+    and welcome email.
+  </p>
+
+  <h2>Your details</h2>
+  <table class="facts">
+    <tr><td class="label">Name</td><td>{{ full_name }}</td></tr>
+    <tr><td class="label">Role</td><td>{{ role }}</td></tr>
+    <tr><td class="label">Start date</td><td>{{ start_date }}</td></tr>
+    <tr><td class="label">Manager</td><td>{{ manager_name }}</td></tr>
+  </table>
+
+  <h2>First-week schedule</h2>
+  <table>
+    <thead>
+      <tr><th>Session</th><th>Date</th><th>Time</th></tr>
+    </thead>
+    <tbody>
+      {% for item in schedule %}
+      <tr><td>{{ item.title }}</td><td>{{ item.date }}</td><td>{{ item.time }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Key contacts</h2>
+  <table class="contacts">
+    <tr><td class="label">Manager</td><td>{{ manager_name }}</td></tr>
+    <tr><td class="label">People team</td><td>{{ people_contact }}</td></tr>
+    <tr><td class="label">IT support</td><td>{{ it_contact }}</td></tr>
+    <tr><td class="label">Company handbook</td><td>{{ handbook_url }}</td></tr>
+  </table>
+
+  <div class="footer">
+    {{ company_name }} · {{ company_address }} · {{ company_email }}
+  </div>
+</body>
+</html>

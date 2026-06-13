@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Alex Example",
+    "role": "Logistics Coordinator",
+    "email": "alex.example@company-a.example.com",
+    "slack_handle": "@alex.example",
+    "manager_name": "Morgan Example",
+    "start_in_days": 7
+  },
+  {
+    "name": "Jordan Example",
+    "role": "Operations Analyst",
+    "email": "jordan.example@company-a.example.com",
+    "slack_handle": "@jordan.example",
+    "manager_name": "Sam Example",
+    "start_in_days": 10
+  },
+  {
+    "name": "Riley Example",
+    "role": "Customer Support Lead",
+    "email": "riley.example@company-a.example.com",
+    "slack_handle": "@riley.example",
+    "manager_name": "Morgan Example",
+    "start_in_days": 3
+  }
+]
