@@ -8,6 +8,7 @@ Run with:  streamlit run tracker/app.py
 The API base URL is taken from API_BASE_URL (default http://localhost:8000).
 """
 
+import hmac
 import os
 from datetime import date
 
@@ -18,6 +19,39 @@ API_BASE_URL = os.environ.get("API_BASE_URL", "http://localhost:8000")
 # Sent to the API when DEMO_MODE=false; ignored (auth is off) in demo mode.
 ADMIN_API_KEY = os.environ.get("ADMIN_API_KEY", "")
 _AUTH_HEADERS = {"X-API-Key": ADMIN_API_KEY} if ADMIN_API_KEY else {}
+
+DEMO_MODE = os.environ.get("DEMO_MODE", "true").strip().lower() not in ("false", "0", "no")
+TRACKER_PASSWORD = os.environ.get("TRACKER_PASSWORD", "")
+
+
+def require_password() -> None:
+    """Gate the tracker UI outside demo mode.
+
+    The tracker exposes hire PII and trigger/retry actions, so it must not sit
+    open on :8501 in a real deploy. In demo mode it stays open (public demo). In
+    production it requires TRACKER_PASSWORD; if that is unset we fail closed
+    rather than serve the data unauthenticated.
+    """
+    if DEMO_MODE:
+        return
+    if not TRACKER_PASSWORD:
+        st.error(
+            "Tracker is not configured for production. Set TRACKER_PASSWORD "
+            "(and put it behind TLS) before exposing it. Refusing to serve "
+            "onboarding data unauthenticated."
+        )
+        st.stop()
+    if st.session_state.get("tracker_authed"):
+        return
+    st.title("🔒 Onboarding tracker")
+    pw = st.text_input("Password", type="password")
+    if st.button("Unlock"):
+        if hmac.compare_digest(pw, TRACKER_PASSWORD):
+            st.session_state["tracker_authed"] = True
+            st.rerun()
+        else:
+            st.error("Incorrect password.")
+    st.stop()
 
 STATUS_BADGE = {
     "COMPLETED": "🟢 COMPLETED",
@@ -51,6 +85,7 @@ def api_post(path: str, json=None):
 
 
 st.set_page_config(page_title="Trinops Onboarding Tracker", page_icon="🧭", layout="wide")
+require_password()
 st.title("🧭 Onboarding tracker")
 st.caption(f"Connected to {API_BASE_URL}")
 
