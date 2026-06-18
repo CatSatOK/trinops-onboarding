@@ -1,0 +1,22 @@
+# Version control
+.git
+.gitignore
+
+# Local secrets and credentials (never bake these into the image)
+.env
+token.json
+credentials.json
+
+# Local data, generated artifacts, and databases
+data/
+*.db
+
+# Python caches and virtual environments
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# OS cruft
+.DS_Store
