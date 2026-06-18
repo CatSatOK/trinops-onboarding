@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from api.security import SecurityHeadersMiddleware
+from api.security import SecurityHeadersMiddleware, docs_urls
 
 
 def _mini_client(csp="default-src 'self'"):
@@ -36,3 +36,8 @@ def test_real_app_wires_the_middleware():
     from api.main import app
 
     assert any(m.cls is SecurityHeadersMiddleware for m in app.user_middleware)
+
+
+def test_docs_enabled_only_in_demo_mode():
+    assert docs_urls(True)["openapi_url"] == "/openapi.json"
+    assert docs_urls(False) == {"docs_url": None, "redoc_url": None, "openapi_url": None}

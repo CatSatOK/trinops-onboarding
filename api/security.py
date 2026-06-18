@@ -16,6 +16,18 @@ from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 _DOCS_PATHS = ("/docs", "/redoc", "/openapi.json")
 
+
+def docs_urls(demo_mode: bool) -> dict[str, str | None]:
+    """FastAPI docs kwargs. The interactive docs (Swagger/ReDoc/OpenAPI) are a
+    dev convenience and an information-disclosure surface, so they are served
+    only in demo mode; in production every docs URL is disabled.
+
+    Spread into the FastAPI constructor: ``FastAPI(..., **docs_urls(demo))``.
+    """
+    if demo_mode:
+        return {"docs_url": "/docs", "redoc_url": "/redoc", "openapi_url": "/openapi.json"}
+    return {"docs_url": None, "redoc_url": None, "openapi_url": None}
+
 # name -> value, all latin-1 encodable. Applied to every HTTP response.
 _BASE_HEADERS: list[tuple[bytes, bytes]] = [
     (b"x-content-type-options", b"nosniff"),

@@ -11,7 +11,7 @@ from onboarding.seed_loader import seed_and_run
 from onboarding.workflow import build_clients
 from api.routes.onboarding import router as onboarding_router
 from api.auth import require_admin
-from api.security import SecurityHeadersMiddleware
+from api.security import SecurityHeadersMiddleware, docs_urls
 
 # This service is a JSON API with no static frontend, so it loads no resources
 # of its own: lock everything down. (Swagger /docs is exempted in the middleware.)
@@ -28,7 +28,13 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Trinops Onboarding", lifespan=lifespan)
+# Interactive docs only in demo mode (see docs_urls). FastAPI never leaks
+# tracebacks unless debug=True, which is never set, so production 500s stay generic.
+app = FastAPI(
+    title="Trinops Onboarding",
+    lifespan=lifespan,
+    **docs_urls(get_settings().demo_mode),
+)
 app.add_middleware(SecurityHeadersMiddleware, csp=CSP)
 app.include_router(onboarding_router, dependencies=[Depends(require_admin)])
 
