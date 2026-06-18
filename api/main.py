@@ -2,7 +2,7 @@
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 
 from onboarding.config import get_settings
 from onboarding.database import init_db, session_scope
@@ -10,6 +10,7 @@ from onboarding.logging_conf import setup_logging
 from onboarding.seed_loader import seed_and_run
 from onboarding.workflow import build_clients
 from api.routes.onboarding import router as onboarding_router
+from api.auth import require_admin
 
 
 @asynccontextmanager
@@ -23,7 +24,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Trinops Onboarding", lifespan=lifespan)
-app.include_router(onboarding_router)
+app.include_router(onboarding_router, dependencies=[Depends(require_admin)])
 
 
 @app.get("/health", tags=["meta"])

@@ -15,6 +15,9 @@ import httpx
 import streamlit as st
 
 API_BASE_URL = os.environ.get("API_BASE_URL", "http://localhost:8000")
+# Sent to the API when DEMO_MODE=false; ignored (auth is off) in demo mode.
+ADMIN_API_KEY = os.environ.get("ADMIN_API_KEY", "")
+_AUTH_HEADERS = {"X-API-Key": ADMIN_API_KEY} if ADMIN_API_KEY else {}
 
 STATUS_BADGE = {
     "COMPLETED": "🟢 COMPLETED",
@@ -40,11 +43,11 @@ STEP_LABELS = {
 
 
 def api_get(path: str):
-    return httpx.get(f"{API_BASE_URL}{path}", timeout=30)
+    return httpx.get(f"{API_BASE_URL}{path}", headers=_AUTH_HEADERS, timeout=30)
 
 
 def api_post(path: str, json=None):
-    return httpx.post(f"{API_BASE_URL}{path}", json=json, timeout=60)
+    return httpx.post(f"{API_BASE_URL}{path}", json=json, headers=_AUTH_HEADERS, timeout=60)
 
 
 st.set_page_config(page_title="Trinops Onboarding Tracker", page_icon="🧭", layout="wide")
